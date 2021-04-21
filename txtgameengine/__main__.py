@@ -1,8 +1,7 @@
 import glfw
-from vulkan import *
 from glfw.GLFW import *
 
-from txtgameengine.app import TxtGameApp
+from .app import TxtGameApp
 
 
 def main():
@@ -12,9 +11,9 @@ def main():
     if not window:
         glfw.terminate()
         return
-    extensions = vkEnumerateInstanceExtensionProperties(None)
-    print([e.name for e in extensions])
+    glfw.swap_interval(1)
     while not glfw.window_should_close(window):
+        glfw.swap_buffers(window)
         glfw.poll_events()
     glfw.destroy_window(window)
     glfw.terminate()
@@ -26,7 +25,7 @@ class TestApp(TxtGameApp):
         self.requested_validation_layers += ["VK_LAYER_KHRONOS_validation"]
 
     def update(self, delta: float):
-        pass
+        super().update(delta)
 
 
 if __name__ == '__main__':
