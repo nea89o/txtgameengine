@@ -1,21 +1,29 @@
 import time
 
-from .platform import PlatformComponent
+from .platform import PlatformComponent, RenderComponent, ShaderComponent
 
 EPSILON = 1.e-10
 
 
 class TxtGameApp:
     PLATFORM_CLASS = PlatformComponent
+    RENDER_CLASS = RenderComponent
+    SHADER_CLASS = ShaderComponent
 
     def __init__(self, size: (int, int), name: str):
         self.size = size
         self.name = name
+        self.window = None
         self.platform = self.PLATFORM_CLASS(self)
-        self.requested_validation_layers = []
+        self.render = self.RENDER_CLASS(self)
+        self.shaders = self.SHADER_CLASS(self)
+
+    def init(self):
+        pass
 
     def start(self):
         self.platform.init()
+        self.init()
         self.platform.set_clear_color(1, 0, 0.75, 1)
         last_update_time = self.platform.monotonic_time()
         while not self.platform.should_close:
