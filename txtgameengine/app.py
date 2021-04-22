@@ -17,6 +17,7 @@ class TxtGameApp:
         self.platform = self.PLATFORM_CLASS(self)
         self.render = self.RENDER_CLASS(self)
         self.shaders = self.SHADER_CLASS(self)
+        self.should_exit = False
 
     def init(self):
         pass
@@ -26,7 +27,7 @@ class TxtGameApp:
         self.init()
         self.platform.set_clear_color(1, 0, 0.75, 1)
         last_update_time = self.platform.monotonic_time()
-        while not self.platform.should_close:
+        while not (self.platform.should_close or self.should_exit):
             update_time = self.platform.monotonic_time()
             self.platform.poll_events()
             self.update(update_time - last_update_time)
@@ -37,3 +38,6 @@ class TxtGameApp:
     def update(self, delta: float):
         print("Running: delta = %.4fs, approx. fps = %ds" % (delta, 1. / (delta or EPSILON)))
         self.platform.clear_background()
+
+    def exit(self):
+        self.should_exit = True
