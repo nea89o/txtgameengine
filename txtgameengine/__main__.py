@@ -2,18 +2,21 @@ import numpy as np
 
 from .scenes import SceneTxtGameApp, Scene
 from OpenGL.GL import *
+from pathlib import Path
+
+shader_path = Path(__file__).parent / 'base_shaders'
 
 
 class TriangleScene(Scene):
     TRIANGLE_DATA = [
         -1.0, -1.0, 0.0,
         1.0, -1.0, 0.0,
-        0.0,  1.0, 0.0,
+        0.0, 1.0, 0.0,
     ]
 
     def on_enter(self):
         self.default_shaders = self.app.shaders.load_shaders(
-            'base_shaders/vertex.glsl', 'base_shaders/fragment.glsl')
+            str(shader_path / 'vertex.glsl'), str(shader_path / 'fragment.glsl'))
 
         self.tri_buffer = self.app.render.setup_triangle(
             np.array(self.TRIANGLE_DATA, np.float32))
@@ -32,8 +35,9 @@ class EvilTriangleScene(TriangleScene):
     TRIANGLE_DATA = [
         -1.0, 1.0, 0.0,
         1.0, 1.0, 0.0,
-        0.0,  -1.0, 0.0,
+        0.0, -1.0, 0.0,
     ]
+
 
 class TestApp(SceneTxtGameApp):
     MAIN_SCENE_T = TriangleScene
