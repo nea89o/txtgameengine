@@ -5,7 +5,7 @@ def o(fname):
 setup(
     name='txtgameengine',
     version='0.0.0',
-    author='Rom',
+    author='Rom and Jon',
     packages=find_packages(),
     install_requires=o('requirements.txt').readlines(),
     zip_safe=False,
