@@ -5,7 +5,7 @@ from pathlib import Path
 from .shaders import TextureShader
 from .twod.textures import Texture
 
-shader_path = Path(__file__).parent / 'builtin_shaders'
+shader_path = Path(__file__).parent / 'shaders'
 
 
 class TriangleScene(Scene):

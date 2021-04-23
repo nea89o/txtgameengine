@@ -4,7 +4,7 @@ from pathlib import Path
 from .platform import PlatformComponent, RenderComponent, ShaderComponent
 
 EPSILON = 1.e-10
-base_path = Path(__file__).parent
+builtin_resource_path = Path(__file__).parent / 'builtin_res'
 
 
 class TxtGameApp:

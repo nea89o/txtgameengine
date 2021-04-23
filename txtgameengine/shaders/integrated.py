@@ -1,7 +1,7 @@
 from .shader import Shader
-from ..app import base_path
+from ..app import builtin_resource_path
 
-shader_base_path = base_path / 'builtin_shaders'
+shader_base_path = builtin_resource_path / 'shaders'
 
 
 class BasicShader(Shader):
