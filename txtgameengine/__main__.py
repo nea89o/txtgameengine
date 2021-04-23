@@ -1,24 +1,25 @@
 import numpy as np
+from PIL import Image
 
 from .scenes import SceneTxtGameApp, Scene
 from OpenGL.GL import *
 from pathlib import Path
 
-shader_path = Path(__file__).parent / 'base_shaders'
+shader_path = Path(__file__).parent / 'builtin_shaders'
 
 
 class TriangleScene(Scene):
     TRIANGLE_DATA = [
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0,
-        0.0, 1.0, 0.0,
+        -1.0, -1.0,
+        1.0, -1.0,
+        0.0, 1.0,
     ]
 
     def on_enter(self):
         self.default_shaders = self.app.shaders.load_shaders(
-            str(shader_path / 'vertex.glsl'), str(shader_path / 'fragment.glsl'))
+            str(shader_path / 'basic/vertex.glsl'), str(shader_path / 'basic/fragment.glsl'))
 
-        self.tri_buffer = self.app.render.setup_triangle(
+        self.tri_buffer = self.app.render.setup_buffer(
             np.array(self.TRIANGLE_DATA, np.float32))
         self.t = 0
 
@@ -33,14 +34,42 @@ class TriangleScene(Scene):
 
 class EvilTriangleScene(TriangleScene):
     TRIANGLE_DATA = [
-        -1.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,
-        0.0, -1.0, 0.0,
+        -1.0, 1.0,
+        1.0, 1.0,
+        0.0, -1.0,
     ]
+
+    def update(self, delta):
+        super().update(delta)
+        self.t = 0
+
+
+class TextureScene(Scene):
+    def on_enter(self):
+        self.texture_shaders = self.app.shaders.load_shaders(str(shader_path / 'texture/vertex.glsl'),
+                                                             str(shader_path / 'texture/fragment.glsl'))
+        self.sampler_location = self.app.shaders.get_uniform_location(self.texture_shaders, 'textureSampler')
+        self.texture = self.app.render.setup_texture_from_pil(Image.open('test_image.png'))
+        self.triangle = self.app.render.setup_buffer(
+            np.array([
+                -1.0, 1.0,
+                1.0, 1.0,
+                -1.0, -1.0,
+            ], np.float32))
+        self.uvs = self.app.render.setup_buffer(
+            np.array([
+                0, 0,
+                1, 0,
+                0, 1,
+            ], np.float32))
+
+    def update(self, delta: float):
+        with self.texture_shaders:
+            self.app.render.textured_triangle(self.sampler_location, self.texture, self.triangle, self.uvs)
 
 
 class TestApp(SceneTxtGameApp):
-    MAIN_SCENE_T = TriangleScene
+    MAIN_SCENE_T = TextureScene
 
     def init(self):
         super().init()

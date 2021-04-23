@@ -1,1 +1,1 @@
-recursive-include txtgameengine/base_shaders *
+recursive-include txtgameengine/builtin_shaders *
