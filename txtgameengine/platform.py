@@ -90,7 +90,7 @@ class ShaderComponent:
         self.app = app
 
     @staticmethod
-    def load_shaders(vertex_file, fragment_file):
+    def load_shaders(vertex_file: str, fragment_file: str):
         with open(vertex_file) as fp:
             vertex_source = fp.read()
         with open(fragment_file) as fp:
@@ -101,8 +101,12 @@ class ShaderComponent:
         return shaders.compileProgram(vertex_shader, fragment_shader)
 
     @staticmethod
-    def get_uniform_location(shader, name):
-        return glGetUniformLocation(shader, name)
+    def bind_shader(prog_id: int):
+        glUseProgram(prog_id)
+
+    @staticmethod
+    def get_uniform_location(prog_id: int, name: str):
+        return glGetUniformLocation(prog_id, name)
 
 
 class RenderComponent:

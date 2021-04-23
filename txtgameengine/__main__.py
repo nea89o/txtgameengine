@@ -2,8 +2,8 @@ import numpy as np
 from PIL import Image
 
 from .scenes import SceneTxtGameApp, Scene
-from OpenGL.GL import *
 from pathlib import Path
+from .shaders import TextureShader
 
 shader_path = Path(__file__).parent / 'builtin_shaders'
 
@@ -46,9 +46,7 @@ class EvilTriangleScene(TriangleScene):
 
 class TextureScene(Scene):
     def on_enter(self):
-        self.texture_shaders = self.app.shaders.load_shaders(str(shader_path / 'texture/vertex.glsl'),
-                                                             str(shader_path / 'texture/fragment.glsl'))
-        self.sampler_location = self.app.shaders.get_uniform_location(self.texture_shaders, 'textureSampler')
+        self.texture_shaders = TextureShader(self.app)
         self.texture = self.app.render.setup_texture_from_pil(Image.open('test_image.png'))
         self.triangle = self.app.render.setup_buffer(
             np.array([
@@ -65,7 +63,8 @@ class TextureScene(Scene):
 
     def update(self, delta: float):
         with self.texture_shaders:
-            self.app.render.textured_triangle(self.sampler_location, self.texture, self.triangle, self.uvs)
+            self.app.render.textured_triangle(self.texture_shaders.textureSampler, self.texture, self.triangle,
+                                              self.uvs)
 
 
 class TestApp(SceneTxtGameApp):

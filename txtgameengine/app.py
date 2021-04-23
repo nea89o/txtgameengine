@@ -1,8 +1,10 @@
 import time
+from pathlib import Path
 
 from .platform import PlatformComponent, RenderComponent, ShaderComponent
 
 EPSILON = 1.e-10
+base_path = Path(__file__).parent
 
 
 class TxtGameApp:
