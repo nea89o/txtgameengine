@@ -31,6 +31,7 @@ class SceneTxtGameApp(TxtGameApp):
         print("Scene Stack:", ' > '.join(type(x).__name__ for x in self.scene_stack))
         self.scene_stack[-1].update(delta)
 
+
 class Scene:
     def __init__(self, app: 'SceneTxtGameApp'):
         self.app = app

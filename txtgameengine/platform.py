@@ -4,7 +4,6 @@ import typing
 import numpy as np
 from OpenGL.GL import *
 import OpenGL.GL.shaders as shaders
-from PIL import Image
 from .twod import Texture
 
 if typing.TYPE_CHECKING:
@@ -144,9 +143,6 @@ class RenderComponent:
         self.triangle(triangle)
         glDisableVertexAttribArray(1)
 
-    def setup_texture_from_pil(self, img: Image.Image):
-        return self.setup_texture(*img.size, np.array(list(img.getdata()), np.uint8))
-
     def setup_texture(self, width: int, height: int, data: np.ndarray):
         tex_id = glGenTextures(1)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4)
@@ -154,4 +150,8 @@ class RenderComponent:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data)
-        return Texture(self.app, tex_id)
+        return tex_id
+
+    def free_texture(self, gl_texid: int):
+        glBindTexture(gl_texid, 0)  # unbind the texture
+        glDeleteTextures(1, gl_texid)  # actually delete it

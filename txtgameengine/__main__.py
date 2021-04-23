@@ -1,9 +1,9 @@
 import numpy as np
-from PIL import Image
 
 from .scenes import SceneTxtGameApp, Scene
 from pathlib import Path
 from .shaders import TextureShader
+from .twod.textures import Texture
 
 shader_path = Path(__file__).parent / 'builtin_shaders'
 
@@ -47,7 +47,7 @@ class EvilTriangleScene(TriangleScene):
 class TextureScene(Scene):
     def on_enter(self):
         self.texture_shaders = TextureShader(self.app)
-        self.texture = self.app.render.setup_texture_from_pil(Image.open('test_image.png'))
+        self.texture = Texture(self.app, 'test_image.png')
         self.triangle = self.app.render.setup_buffer(
             np.array([
                 -1.0, 1.0,
