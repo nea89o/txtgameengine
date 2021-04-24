@@ -149,6 +149,8 @@ class RenderComponent:
 
     @staticmethod
     def setup_buffer(arr, mode=GL_STATIC_DRAW):
+        if not hasattr(arr, 'itemsize'):
+            arr = np.array(arr, np.float32)
         buf = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, buf)
         glBufferData(GL_ARRAY_BUFFER, arr.itemsize *
@@ -156,21 +158,24 @@ class RenderComponent:
         return buf
 
     @staticmethod
-    def triangle(buf):
+    def triangle(buf, count=3):
         glEnableVertexAttribArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, buf)
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, None)
-        glDrawArrays(GL_TRIANGLES, 0, 3)
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, count)
         glDisableVertexAttribArray(0)
 
-    def textured_triangle(self, shader_location, texture, triangle, uvs):
+    @staticmethod
+    def bind_texture(shader_location, texture):
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, texture.gl_texid)
         glUniform1i(shader_location, 0)
+
+    def textured_triangle(self, triangle, uvs, count=3):
         glEnableVertexAttribArray(1)
         glBindBuffer(GL_ARRAY_BUFFER, uvs)
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, None)
-        self.triangle(triangle)
+        self.triangle(triangle, count)
         glDisableVertexAttribArray(1)
 
     def setup_texture(self, width: int, height: int, data: np.ndarray):

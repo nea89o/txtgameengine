@@ -14,3 +14,9 @@ class TextureShader(Shader):
     UNIFORMS = dict(textureSampler="textureSampler")
     VERTEX_PATH = shader_base_path / 'texture/vertex.glsl'
     FRAGMENT_PATH = shader_base_path / 'texture/fragment.glsl'
+
+
+class FontShader(Shader):
+    UNIFORMS = dict(textureSampler="textureSampler")
+    VERTEX_PATH = shader_base_path / 'font/vertex.glsl'
+    FRAGMENT_PATH = shader_base_path / 'font/fragment.glsl'

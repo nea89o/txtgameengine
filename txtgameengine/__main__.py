@@ -1,5 +1,6 @@
 import numpy as np
 
+from .fonts import TextRenderer, BitmapFont
 from .scenes import SceneTxtGameApp, Scene
 from pathlib import Path
 from .shaders import TextureShader
@@ -54,20 +55,23 @@ class TextureScene(Scene):
                 -1.0, 1.0,
                 1.0, 1.0,
                 -1.0, -1.0,
+                1.0, -1.0,
             ], np.float32))
         self.uvs = self.app.render.setup_buffer(
             np.array([
                 0, 0,
                 1, 0,
                 0, 1,
+                1, 1,
             ], np.float32))
+        self.text_renderer = TextRenderer(self.app)
+        self.text_renderer.use_font(BitmapFont.fira_mono(self.app))
 
     def update(self, delta: float):
-        print(self.app.coords.from_pixels_to_screen(0, 0))
-        print(self.app.coords.from_screen_to_pixels(0, 0))
         with self.texture_shaders:
-            self.app.render.textured_triangle(self.texture_shaders.textureSampler, self.texture, self.triangle,
-                                              self.uvs)
+            self.app.render.bind_texture(self.texture_shaders.textureSampler, self.texture)
+            self.app.render.textured_triangle(self.triangle, self.uvs, 4)
+        self.text_renderer.render_text(0, 0, "HEE")
 
 
 class TestApp(SceneTxtGameApp):
