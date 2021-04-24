@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 import typing
 import xml.dom.minidom as minidom
-
+from PIL import Image
 from .shaders import FontShader
 
 if typing.TYPE_CHECKING:
@@ -43,7 +43,8 @@ class BitmapFont(Font):
             code = char.attributes['code'].value
             width = char.attributes['width'].value
             x_render_offset, y_render_offset = char.attributes['offset'].value.split(' ')
-            x_texture_offset, y_texture_offset, x_texture_width, y_texture_width = char.attributes['rect'].value.split(' ')
+            x_texture_offset, y_texture_offset, x_texture_width, y_texture_width = char.attributes['rect'].value.split(
+                ' ')
             self.glyphs[code] = \
                 Glyph(self, int(x_texture_offset), int(y_texture_offset), int(x_texture_width), int(y_texture_width),
                       int(x_render_offset), int(y_render_offset), int(width))
@@ -56,7 +57,8 @@ class BitmapFont(Font):
     @classmethod
     def fira_mono(cls, app: 'TxtGameApp'):
         from .app import builtin_resource_path
-        return cls.load(app, builtin_resource_path / 'fonts/fira_code/regular.png',
+        img = Image.open(builtin_resource_path / 'fonts/fira_code/regular.png')
+        return cls.load(app, img,
                         builtin_resource_path / 'fonts/fira_code/regular.xml')
 
 
@@ -94,8 +96,10 @@ class TextRenderer:
         tex_high_x = tex_low_x + glyph.x_texture_width
         tex_low_y = glyph.y_texture_offset
         tex_high_y = tex_low_y + glyph.y_texture_width
-        tex_low_x, tex_low_y = self.app.coords.from_pixels_to_screen(tex_low_x, tex_low_y)
-        tex_high_x, tex_high_y = self.app.coords.from_pixels_to_screen(tex_high_x, tex_high_y)
+        tex_low_x, tex_low_y = self.font.texture.uvs_from_pixels(tex_low_x, tex_low_y)
+        tex_high_x, tex_high_y = self.font.texture.uvs_from_pixels(tex_high_x, tex_high_y)
+        print(tex_low_x, tex_low_y)
+        print(tex_high_x, tex_high_y)
         render = self.app.render.setup_buffer([
             low_x, low_y,
             high_x, low_y,

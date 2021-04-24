@@ -23,6 +23,8 @@ class PlatformComponent:
         glfw.init()
         self.init_window()
         glfw.make_context_current(self.app.window)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glViewport(0, 0, *self.app.size)
 
     @staticmethod
@@ -61,8 +63,8 @@ class PlatformComponent:
     @staticmethod
     def init_callbacks(window, handler: CallbackHandler):
         glfw.set_key_callback(window, handler.get_keyboard_input_callback)
-        #glfw.set_mouse_button_callback(window, handler.get_mouse_click_callback())
-        #glfw.set_cursor_pos_callback(window, handler.get_mouse_move_callback())
+        # glfw.set_mouse_button_callback(window, handler.get_mouse_click_callback())
+        # glfw.set_cursor_pos_callback(window, handler.get_mouse_move_callback())
 
     def cleanup(self):
         glfw.destroy_window(self.app.window)
@@ -112,6 +114,11 @@ class CoordinateComponent:
     def from_pixels_to_screen(self, x: int, y: int) -> typing.Tuple[float, float]:
         return np.interp(x, self.pixel_x, self.screen_x), \
                np.interp(y, self.pixel_y, self.screen_y)
+
+    @staticmethod
+    def from_pixels_to_uvs(size: typing.Tuple[int, int], x: int, y: int) -> typing.Tuple[float, float]:
+        return np.interp(x, [0, size[0]], [0, 1]), \
+               np.interp(y, [0, size[1]], [0, 1])
 
 
 class ShaderComponent:
@@ -184,7 +191,7 @@ class RenderComponent:
         glBindTexture(GL_TEXTURE_2D, tex_id)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
         return tex_id
 
     def free_texture(self, gl_texid: int):
