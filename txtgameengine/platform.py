@@ -98,11 +98,11 @@ class CoordinateComponent:
     def pixel_y(self):
         return [0, self.app.size[1]]
 
-    def from_screen_to_pixels(self, x: float, y: float) -> (int, int):
+    def from_screen_to_pixels(self, x: float, y: float) -> typing.Tuple[int, int]:
         return int(np.interp(x, self.screen_x, self.pixel_x)), \
                int(np.interp(y, self.screen_y, self.pixel_y))
 
-    def from_pixels_to_screen(self, x: int, y: int) -> (float, float):
+    def from_pixels_to_screen(self, x: int, y: int) -> typing.Tuple[float, float]:
         return np.interp(x, self.pixel_x, self.screen_x), \
                np.interp(y, self.pixel_y, self.screen_y)
 
