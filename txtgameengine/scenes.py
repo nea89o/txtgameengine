@@ -1,5 +1,5 @@
 import typing
-
+from .input.keyboard import KeyboardCallback
 from .app import TxtGameApp
 
 

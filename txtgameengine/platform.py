@@ -5,6 +5,7 @@ import numpy as np
 from OpenGL.GL import *
 import OpenGL.GL.shaders as shaders
 from .twod import Texture
+from .input.callbacks import CallbackHandler
 
 if typing.TYPE_CHECKING:
     from .app import TxtGameApp
@@ -56,6 +57,12 @@ class PlatformComponent:
     @staticmethod
     def poll_events():
         glfw.poll_events()
+
+    @staticmethod
+    def init_callbacks(window, handler: CallbackHandler):
+        glfw.set_key_callback(window, handler.get_keyboard_input_callback)
+        #glfw.set_mouse_button_callback(window, handler.get_mouse_click_callback())
+        #glfw.set_cursor_pos_callback(window, handler.get_mouse_move_callback())
 
     def cleanup(self):
         glfw.destroy_window(self.app.window)

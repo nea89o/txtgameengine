@@ -1,4 +1,5 @@
 from pathlib import Path
+from .input.callbacks import CallbackHandler
 
 EPSILON = 1.e-10
 builtin_resource_path = Path(__file__).parent / 'builtin_res'
@@ -21,9 +22,10 @@ class TxtGameApp:
         self.shaders = self.SHADER_CLASS(self)
         self.coords = self.COORDINATE_CLASS(self)
         self.should_exit = False
+        self.handler = CallbackHandler(self)
 
     def init(self):
-        pass
+        self.platform.init_callbacks(self.window, self.handler)
 
     def start(self):
         self.platform.init()

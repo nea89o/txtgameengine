@@ -4,6 +4,7 @@ from .scenes import SceneTxtGameApp, Scene
 from pathlib import Path
 from .shaders import TextureShader
 from .twod.textures import Texture, TEXTURE_FOLDER
+from.input.keyboard import ModKey, KeyboardEvent
 
 shader_path = Path(__file__).parent / 'shaders'
 
@@ -75,7 +76,11 @@ class TestApp(SceneTxtGameApp):
     def init(self):
         super().init()
         self.render.setup_vertex_arrays()
+        self.handler.register_keyboard_callback(self.handler.keyboard_callback()
+                                                .with_mod_key(ModKey.CONTROL)
+                                                .build(lambda key_event: print(key_event.keycode)))
         # self.platform.check_debug()
+
 
 
 if __name__ == '__main__':
