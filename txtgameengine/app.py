@@ -1,16 +1,16 @@
-import time
 from pathlib import Path
-
-from .platform import PlatformComponent, RenderComponent, ShaderComponent
 
 EPSILON = 1.e-10
 builtin_resource_path = Path(__file__).parent / 'builtin_res'
+
+from .platform import PlatformComponent, RenderComponent, ShaderComponent, CoordinateComponent
 
 
 class TxtGameApp:
     PLATFORM_CLASS = PlatformComponent
     RENDER_CLASS = RenderComponent
     SHADER_CLASS = ShaderComponent
+    COORDINATE_CLASS = CoordinateComponent
 
     def __init__(self, size: (int, int), name: str):
         self.size = size
@@ -19,6 +19,7 @@ class TxtGameApp:
         self.platform = self.PLATFORM_CLASS(self)
         self.render = self.RENDER_CLASS(self)
         self.shaders = self.SHADER_CLASS(self)
+        self.coords = self.COORDINATE_CLASS(self)
         self.should_exit = False
 
     def init(self):

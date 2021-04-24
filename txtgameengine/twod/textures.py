@@ -17,7 +17,7 @@ class Texture:
         self._bind_to_gl()
 
     def _bind_to_gl(self):
-        image = Image.open(os.path.join(TEXTURE_FOLDER, self.path))
+        image = Image.open(self.path)
         self.width, self.height = image.size
         imagedata = np.array(list(image.getdata()), np.uint8)
         self.gl_texid = self.app.render.setup_texture(self.width, self.height, imagedata)

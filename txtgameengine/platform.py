@@ -17,12 +17,11 @@ class PlatformError(Exception):
 class PlatformComponent:
     def __init__(self, app: 'TxtGameApp'):
         self.app = app
-        self.window = None
 
     def init(self):
         glfw.init()
         self.init_window()
-        glfw.make_context_current(self.window)
+        glfw.make_context_current(self.app.window)
         glViewport(0, 0, *self.app.size)
 
     @staticmethod
@@ -41,29 +40,29 @@ class PlatformComponent:
         glfw.window_hint(glfw.OPENGL_DEBUG_CONTEXT, glfw.TRUE)
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
-        self.window = glfw.create_window(
+        self.app.window = glfw.create_window(
             *self.app.size, self.app.name, None, None)
-        if not self.window:
+        if not self.app.window:
             raise PlatformError("Failed to initialize glfw window")
 
     @property
     def should_close(self) -> bool:
-        return glfw.window_should_close(self.window)
+        return glfw.window_should_close(self.app.window)
 
     @should_close.setter
     def should_close(self, val: bool):
-        glfw.set_window_should_close(val)
+        glfw.set_window_should_close(val, self.app.window)
 
     @staticmethod
     def poll_events():
         glfw.poll_events()
 
     def cleanup(self):
-        glfw.destroy_window(self.window)
+        glfw.destroy_window(self.app.window)
         glfw.terminate()
 
     def swap_buffers(self):
-        glfw.swap_buffers(self.window)
+        glfw.swap_buffers(self.app.window)
 
     @staticmethod
     def set_clear_color(r, g, b, a):
@@ -82,6 +81,30 @@ class PlatformComponent:
     def clear_background(depth_buffer=False):
         glClear(GL_COLOR_BUFFER_BIT | (
                 depth_buffer and GL_DEPTH_BUFFER_BIT or 0))
+
+
+class CoordinateComponent:
+
+    def __init__(self, app: 'TxtGameApp'):
+        self.screen_x = [-1, 1]
+        self.screen_y = [1, -1]
+        self.app = app
+
+    @property
+    def pixel_x(self):
+        return [0, self.app.size[0]]
+
+    @property
+    def pixel_y(self):
+        return [0, self.app.size[1]]
+
+    def from_screen_to_pixels(self, x: float, y: float) -> (int, int):
+        return int(np.interp(x, self.screen_x, self.pixel_x)), \
+               int(np.interp(y, self.screen_y, self.pixel_y))
+
+    def from_pixels_to_screen(self, x: int, y: int) -> (float, float):
+        return np.interp(x, self.pixel_x, self.screen_x), \
+               np.interp(y, self.pixel_y, self.screen_y)
 
 
 class ShaderComponent:
